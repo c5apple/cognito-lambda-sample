@@ -180,53 +180,29 @@ Authorization: Bearer {access_token}
 
 ### CLIユーティリティ
 
-#### テストユーザーの作成
-```bash
-# 直接実行
-python cli/create_user.py --email test@example.com --password TempPass123!
+プロジェクトにはテストユーザー管理用のCLIツールが含まれています。
 
-# npm scriptを使用
+```bash
+# テストユーザーの作成
 npm run create-user -- --email test@example.com --password TempPass123!
 
-# Docker環境内で実行
-docker-compose exec cognito-auth-api python cli/create_user.py --email test@example.com --password TempPass123!
-```
-
-#### テストユーザーの削除
-```bash
-# 直接実行
-python cli/delete_user.py --email test@example.com
-
-# npm scriptを使用
+# テストユーザーの削除
 npm run delete-user -- --email test@example.com
-
-# Docker環境内で実行
-docker-compose exec cognito-auth-api python cli/delete_user.py --email test@example.com
 ```
+
+詳細な使用方法とすべてのnpmスクリプトについては、📚 **[NPMスクリプト使用ガイド](docs/npm-scripts.md)** を参照してください。
 
 ## 🧪 テスト
 
-### すべてのテストを実行
 ```bash
-# ローカル環境
-python -m pytest
-
-# npm script
+# 基本的なテスト実行
 npm run test
 
-# Docker環境
-docker-compose exec cognito-auth-api python -m pytest
+# Docker環境でのテスト
+npm run docker-test
 ```
 
-### 単体テストのみ
-```bash
-python -m pytest tests/unit/
-```
-
-### 統合テストのみ
-```bash
-python -m pytest tests/integration/
-```
+詳細なテストオプションについては、📚 **[NPMスクリプト使用ガイド](docs/npm-scripts.md)** を参照してください。
 
 ## 🚀 デプロイ
 
@@ -279,31 +255,14 @@ npm run deploy
 
 ## 🛠️ 開発
 
-### 利用可能なnpm scripts
+### 主要なnpm scripts
 
-```json
-{
-  "scripts": {
-    "deploy": "serverless deploy",
-    "setup-env": "bash scripts/setup-env.sh",
-    "deploy-and-setup": "npm run deploy && npm run setup-env",
-    "remove": "serverless remove",
-    "create-user": "python cli/create_user.py",
-    "delete-user": "python cli/delete_user.py",
-    "test": "python -m pytest tests/"
-  }
-}
-```
+- `npm run deploy` - AWSリソースをデプロイ
+- `npm run test` - テストを実行
+- `npm run create-user` - テストユーザーを作成
+- `npm run delete-user` - テストユーザーを削除
 
-#### スクリプトの説明
-
-- **deploy-and-setup**: 🚀 ワンコマンドセットアップ（Cognito作成 + 環境変数設定）
-- **deploy**: AWSリソースをデプロイ
-- **setup-env**: デプロイ結果から環境変数を自動生成
-- **remove**: 全AWSリソースを削除
-- **create-user**: テストユーザーを作成
-- **delete-user**: テストユーザーを削除  
-- **test**: 全テストを実行
+すべてのnpmスクリプトとDocker統合コマンドについては、📚 **[NPMスクリプト使用ガイド](docs/npm-scripts.md)** を参照してください。
 
 ### 開発ワークフロー
 
