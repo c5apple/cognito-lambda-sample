@@ -1,0 +1,15 @@
+# AWS SDK
+boto3==1.28.85
+botocore==1.31.85
+
+# Testing dependencies
+pytest==7.4.3
+pytest-mock==3.12.0
+moto==4.2.11  # For mocking AWS services in tests
+
+# Development dependencies
+python-dotenv==1.0.0  # For loading environment variables
+requests==2.31.0  # For HTTP requests if needed
+
+# Optional: For enhanced testing
+coverage==7.3.2
