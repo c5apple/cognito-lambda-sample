@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  cognito-auth-api:
+    build: .
+    container_name: cognito-auth-api
+    volumes:
+      # Development workflow volume mounts
+      - .:/app
+      - /app/__pycache__  # Exclude cache directory
+    environment:
+      # AWS Cognito Configuration
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
+      - COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      
+      # Optional AWS Credentials (if not using IAM roles)
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      
+      # Development Configuration
+      - DEBUG=${DEBUG:-true}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - PYTHONPATH=/app
+    
+    # Keep container running for development
+    command: tail -f /dev/null
+    
+    # Optional: Expose port for future web interface
+    # ports:
+    #   - "8000:8000"
+    
+    # Optional: Add health check
+    healthcheck:
+      test: ["CMD", "python", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
