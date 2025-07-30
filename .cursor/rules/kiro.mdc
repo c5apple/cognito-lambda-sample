@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+本プロジェクトの要件定義および設計書は `.kiro/` フォルダにあります。
+
+タスクを進める前に、必ず次のファイルを完全に理解してから進めてください。
+
+- `.kiro/specs/cognito-auth-api/requirements.md`
+- `.kiro/specs/cognito-auth-api/design.md`
+- `.kiro/specs/cognito-auth-api/tasks.md`
