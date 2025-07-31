@@ -29,8 +29,8 @@ class TestTokenValidator:
     
     def setup_method(self):
         """テストメソッドの初期化"""
-        self.user_pool_id = 'us-east-1_test123'
-        self.region = 'us-east-1'
+        self.user_pool_id = 'ap-northeast-1_test123'
+        self.region = 'ap-northeast-1'
         self.validator = TokenValidator(self.user_pool_id, self.region)
     
     def test_initialization(self):
@@ -286,7 +286,7 @@ class TestValidateAndExtractUserInfo:
         }
         mock_validate_token.return_value = mock_payload
         
-        result = validate_and_extract_user_info('test_token', 'us-east-1_test123')
+        result = validate_and_extract_user_info('test_token', 'ap-northeast-1_test123')
         
         expected = {
             'user_id': 'user123',
@@ -303,7 +303,7 @@ class TestValidateAndExtractUserInfo:
     def test_validate_and_extract_user_info_empty_token(self):
         """空のトークンでValidationErrorが発生することをテスト"""
         with pytest.raises(ValidationError, match="認証が必要です"):
-            validate_and_extract_user_info('', 'us-east-1_test123')
+            validate_and_extract_user_info('', 'ap-northeast-1_test123')
     
     def test_validate_and_extract_user_info_empty_pool_id(self):
         """空のユーザープールIDでValidationErrorが発生することをテスト"""
@@ -319,7 +319,7 @@ class TestValidateAndExtractUserInfo:
         }
         mock_validate_token.return_value = mock_payload
         
-        result = validate_and_extract_user_info('test_token', 'us-east-1_test123')
+        result = validate_and_extract_user_info('test_token', 'ap-northeast-1_test123')
         
         assert result['scope'] == []
 
@@ -336,11 +336,11 @@ class TestRequireAuthentication:
         mock_validate.return_value = mock_user_info
         
         event = {'headers': {'Authorization': 'Bearer test_token'}}
-        result = require_authentication(event, 'us-east-1_test123')
+        result = require_authentication(event, 'ap-northeast-1_test123')
         
         assert result == mock_user_info
         mock_extract.assert_called_once_with(event)
-        mock_validate.assert_called_once_with('test_token', 'us-east-1_test123', 'us-east-1')
+        mock_validate.assert_called_once_with('test_token', 'ap-northeast-1_test123', 'ap-northeast-1')
 
 
 class TestCreateAuthErrorResponse:

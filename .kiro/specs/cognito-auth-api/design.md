@@ -202,9 +202,9 @@ docker-compose down
 ### 環境変数
 
 ```
-COGNITO_USER_POOL_ID=us-east-1_XXXXXXXXX
+COGNITO_USER_POOL_ID=ap-northeast-1_XXXXXXXXX
 COGNITO_CLIENT_ID=1234567890abcdefghijklmnop
-AWS_REGION=us-east-1
+AWS_REGION=ap-northeast-1
 ```
 
 ## エラーハンドリング

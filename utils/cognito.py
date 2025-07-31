@@ -72,7 +72,7 @@ class CognitoClient:
         """
         self.user_pool_id = user_pool_id or os.getenv('COGNITO_USER_POOL_ID')
         self.client_id = client_id or os.getenv('COGNITO_CLIENT_ID')
-        self.region = region or os.getenv('AWS_REGION', 'us-east-1')
+        self.region = region or os.getenv('AWS_REGION', 'ap-northeast-1')
         
         if not self.user_pool_id:
             raise ValidationError("COGNITO_USER_POOL_ID is required")

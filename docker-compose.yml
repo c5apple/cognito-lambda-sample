@@ -12,7 +12,7 @@ services:
       # AWS Cognito Configuration
       - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
       - COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID}
-      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_REGION=${AWS_REGION:-ap-northeast-1}
       
       # Optional AWS Credentials (if not using IAM roles)
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}

@@ -94,9 +94,9 @@ npm run setup-env
 
 これで`.env`ファイルが自動生成されます：
 ```env
-COGNITO_USER_POOL_ID=us-east-1_AbCd1234Ef  # 自動設定
+COGNITO_USER_POOL_ID=ap-northeast-1_AbCd1234Ef  # 自動設定
 COGNITO_CLIENT_ID=1a2b3c4d5e6f7g8h9i0j    # 自動設定
-AWS_REGION=us-east-1                       # AWSプロファイルから取得
+AWS_REGION=ap-northeast-1                       # AWSプロファイルから取得
 ```
 
 #### 5. 開発環境のセットアップ（オプション）

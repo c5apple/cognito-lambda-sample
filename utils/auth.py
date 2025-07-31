@@ -28,7 +28,7 @@ class TokenValidator:
     Cognito JWT トークンの検証を行い、トークンの有効性とユーザー情報を確認する
     """
     
-    def __init__(self, user_pool_id: str, region: str = 'us-east-1'):
+    def __init__(self, user_pool_id: str, region: str = 'ap-northeast-1'):
         """
         トークン検証の初期化
         
@@ -192,7 +192,7 @@ def extract_token_from_event(event: Dict[str, Any]) -> str:
     return extract_token_from_header(auth_header)
 
 
-def validate_and_extract_user_info(token: str, user_pool_id: str, region: str = 'us-east-1') -> Dict[str, Any]:
+def validate_and_extract_user_info(token: str, user_pool_id: str, region: str = 'ap-northeast-1') -> Dict[str, Any]:
     """
     トークンを検証してユーザー情報を抽出
     
@@ -231,7 +231,7 @@ def validate_and_extract_user_info(token: str, user_pool_id: str, region: str = 
     }
 
 
-def require_authentication(event: Dict[str, Any], user_pool_id: str, region: str = 'us-east-1') -> Dict[str, Any]:
+def require_authentication(event: Dict[str, Any], user_pool_id: str, region: str = 'ap-northeast-1') -> Dict[str, Any]:
     """
     認証が必要なエンドポイント用のデコレータ関数
     

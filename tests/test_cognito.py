@@ -21,9 +21,9 @@ class TestCognitoClient:
     """CognitoClientクラスのテスト"""
     
     @patch.dict(os.environ, {
-        'COGNITO_USER_POOL_ID': 'us-east-1_test123',
+        'COGNITO_USER_POOL_ID': 'ap-northeast-1_test123',
         'COGNITO_CLIENT_ID': 'test_client_id',
-        'AWS_REGION': 'us-east-1'
+        'AWS_REGION': 'ap-northeast-1'
     })
     @patch('utils.cognito.boto3.client')
     def test_initialization_with_env_vars(self, mock_boto_client):
@@ -33,10 +33,10 @@ class TestCognitoClient:
         
         client = CognitoClient()
         
-        assert client.user_pool_id == 'us-east-1_test123'
+        assert client.user_pool_id == 'ap-northeast-1_test123'
         assert client.client_id == 'test_client_id'
-        assert client.region == 'us-east-1'
-        mock_boto_client.assert_called_once_with('cognito-idp', region_name='us-east-1')
+        assert client.region == 'ap-northeast-1'
+        mock_boto_client.assert_called_once_with('cognito-idp', region_name='ap-northeast-1')
     
     @patch('utils.cognito.boto3.client')
     def test_initialization_with_parameters(self, mock_boto_client):
@@ -388,7 +388,7 @@ class TestHelperFunctions:
     """ヘルパー関数のテスト"""
     
     @patch.dict(os.environ, {
-        'COGNITO_USER_POOL_ID': 'us-east-1_helper_test',
+        'COGNITO_USER_POOL_ID': 'ap-northeast-1_helper_test',
         'COGNITO_CLIENT_ID': 'helper_client_id'
     })
     @patch('utils.cognito.boto3.client')
@@ -400,7 +400,7 @@ class TestHelperFunctions:
         client = get_cognito_client()
         
         assert isinstance(client, CognitoClient)
-        assert client.user_pool_id == 'us-east-1_helper_test'
+        assert client.user_pool_id == 'ap-northeast-1_helper_test'
         assert client.client_id == 'helper_client_id'
 
 

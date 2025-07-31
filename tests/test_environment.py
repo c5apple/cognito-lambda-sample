@@ -31,6 +31,6 @@ def test_required_modules():
 def test_environment_variables():
     """Test that environment variables can be accessed"""
     # These might not be set in test environment, so just check they can be accessed
-    aws_region = os.getenv('AWS_REGION', 'us-east-1')
+    aws_region = os.getenv('AWS_REGION', 'ap-northeast-1')
     assert isinstance(aws_region, str)
     assert len(aws_region) > 0
