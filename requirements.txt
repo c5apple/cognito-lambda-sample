@@ -10,6 +10,7 @@ moto==4.2.11  # For mocking AWS services in tests
 # Development dependencies
 python-dotenv==1.0.0  # For loading environment variables
 requests==2.31.0  # For HTTP requests if needed
+PyJWT==2.8.0  # For JWT token validation and cryptographic verification
 
 # Optional: For enhanced testing
 coverage==7.3.2
