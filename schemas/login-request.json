@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Login Request Schema",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "ユーザーのメールアドレス",
+      "minLength": 3,
+      "maxLength": 254
+    },
+    "password": {
+      "type": "string",
+      "description": "ユーザーのパスワード",
+      "minLength": 8,
+      "maxLength": 128
+    }
+  },
+  "required": ["email", "password"],
+  "additionalProperties": false
+}

@@ -44,7 +44,10 @@
     "url": "https://github.com/your-username/cognito-lambda-sample/issues"
   },
   "homepage": "https://github.com/your-username/cognito-lambda-sample#readme",
-  "devDependencies": {},
+  "devDependencies": {
+    "serverless": "^3.38.0",
+    "serverless-python-requirements": "^6.0.0"
+  },
   "engines": {
     "node": ">=14.0.0",
     "python": ">=3.9.0"

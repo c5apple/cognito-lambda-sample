@@ -1,0 +1,226 @@
+service: cognito-auth-api
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.9
+  stage: ${opt:stage, 'dev'}
+  region: ap-northeast-1
+  
+  # 環境変数設定
+  environment:
+    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
+    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
+    AWS_REGION: ${self:provider.region}
+    LOG_LEVEL: ${env:LOG_LEVEL, 'INFO'}
+  
+  # 最小限の必要権限でのIAMロール設定
+  iam:
+    role:
+      statements:
+        # Cognito Identity Provider へのアクセス権限
+        - Effect: Allow
+          Action:
+            - cognito-idp:InitiateAuth
+            - cognito-idp:GlobalSignOut
+            - cognito-idp:GetUser
+            - cognito-idp:AdminCreateUser
+            - cognito-idp:AdminDeleteUser
+            - cognito-idp:AdminSetUserPassword
+            - cognito-idp:AdminGetUser
+          Resource: 
+            - arn:aws:cognito-idp:${self:provider.region}:*:userpool/${env:COGNITO_USER_POOL_ID}
+        # CloudWatch Logs へのアクセス権限（最小限のログ記録）
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource: 
+            - arn:aws:logs:${self:provider.region}:*:log-group:/aws/lambda/*
+
+  # API Gateway設定
+  logs:
+    restApi:
+      accessLogging: false  # コスト最適化のためAPIアクセスログを無効化
+      executionLogging: false
+  tracing:
+    lambda: false   # コスト最適化のためX-Rayトレーシングを無効化
+
+# パッケージング設定
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!.git/**'
+    - '!.pytest_cache/**'
+    - '!tests/**'
+    - '!docs/**'
+    - '!.env*'
+    - '!README.md'
+    - '!docker-compose.yml'
+    - '!Dockerfile'
+    - '!.kiro/**'
+    - '!.cursor/**'
+    - '!htmlcov/**'
+    - '!.coverage'
+    - '!__pycache__/**'
+    - '!**/*.pyc'
+
+# Lambda関数定義
+functions:
+  # ログイン機能
+  login:
+    handler: handlers.login.lambda_handler
+    description: "ユーザー認証とJWTトークン発行"
+    timeout: 30
+    memorySize: 256
+    events:
+      - http:
+          path: /auth/login
+          method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+          request:
+            schemas:
+              application/json:
+                schema: ${file(./schemas/login-request.json)}
+                name: LoginRequestModel
+                description: "ログインリクエストの検証スキーマ"
+
+  # ログアウト機能
+  logout:
+    handler: handlers.logout.lambda_handler
+    description: "ユーザーセッション終了とトークン無効化"
+    timeout: 30
+    memorySize: 256
+    events:
+      - http:
+          path: /auth/logout
+          method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+
+  # ユーザー情報取得機能
+  getUserInfo:
+    handler: handlers.user_info.lambda_handler
+    description: "認証されたユーザーのプロファイル情報取得"
+    timeout: 30
+    memorySize: 256
+    events:
+      - http:
+          path: /user/info
+          method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+
+# CloudFormation リソース定義
+resources:
+  Resources:
+    # API Gateway レスポンス設定
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        RestApiId:
+          Ref: 'RestApiApigEvent'
+        ResponseType: DEFAULT_4XX
+        ResponseTemplates:
+          application/json: |
+            {
+              "error": "ClientError",
+              "message": "リクエストが不正です"
+            }
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'"
+
+    GatewayResponseDefault5XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        RestApiId:
+          Ref: 'RestApiApigEvent'
+        ResponseType: DEFAULT_5XX
+        ResponseTemplates:
+          application/json: |
+            {
+              "error": "InternalServerError",
+              "message": "内部サーバーエラーが発生しました"
+            }
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'"
+
+  Outputs:
+    ApiGatewayRestApiId:
+      Value:
+        Ref: RestApiApigEvent
+      Export:
+        Name: ${self:service}-${self:provider.stage}-RestApiId
+
+    ApiGatewayRestApiRootResourceId:
+      Value:
+        Fn::GetAtt:
+          - RestApiApigEvent
+          - RootResourceId
+      Export:
+        Name: ${self:service}-${self:provider.stage}-RootResourceId
+
+    ApiUrl:
+      Description: "API Gateway URL"
+      Value:
+        Fn::Join:
+          - ''
+          - - 'https://'
+            - Ref: RestApiApigEvent
+            - '.execute-api.'
+            - ${self:provider.region}
+            - '.amazonaws.com/'
+            - ${self:provider.stage}
+      Export:
+        Name: ${self:service}-${self:provider.stage}-ApiUrl
+
+# プラグイン（必要に応じて）
+plugins:
+  - serverless-python-requirements
+
+# カスタム設定
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    slim: true
+    strip: false
+    noDeps: []
+    pipCmdExtraArgs:
+      - --no-cache-dir
+    fileName: requirements.txt
+
+# ステージ別設定
+configValidationMode: error
+deprecationNotificationMode: warn
+
+# 環境変数検証
+variablesResolutionMode: 20210326

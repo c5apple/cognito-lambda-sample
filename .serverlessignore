@@ -1,0 +1,45 @@
+# Serverless ignore patterns
+# テスト関連
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+__pycache__/
+**/*.pyc
+**/__pycache__/
+
+# 開発環境関連
+.env*
+.venv/
+venv/
+node_modules/
+
+# ドキュメント
+docs/
+README.md
+*.md
+
+# 設定ファイル
+docker-compose.yml
+Dockerfile
+.gitignore
+.git/
+
+# IDE設定
+.vscode/
+.idea/
+.cursor/
+
+# プロジェクト固有
+.kiro/
+
+# OS関連
+.DS_Store
+Thumbs.db
+
+# ログファイル
+*.log
+
+# 一時ファイル
+*.tmp
+*.temp
